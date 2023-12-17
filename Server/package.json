@@ -1,0 +1,16 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "npm run serve"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@supercharge/request-ip": "^1.2.0",
+    "formidable": "^2.1.1",
+    "log4js": "^6.9.1"
+  }
+}

@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <style>
+        #config {
+            position: fixed;
+            left: 0;
+            top: 100px;
+            z-index: 999;
+        }
+
+        .portion {
+            height: auto;
+            margin: 10px 0;
+        }
+
+        .h3 {
+            display: inline-block;
+            font-size: 16px;
+            margin: 0 !important;
+        }
+
+        .portion ul,
+        ol {
+            list-style: none;
+            line-height: 20px !important;
+            margin-bottom: 0 !important;
+            padding-left: 0;
+        }
+
+        .portion ul,
+        ol li {
+            margin: 10px 10px;
+            height: 20px;
+        }
+
+        .portion ul li {
+            float: left;
+        }
+
+        .clearfix:before,
+        .clearfix:after {
+            content: "";
+            display: table;
+        }
+
+        .clearfix:after {
+            clear: both;
+            overflow: hidden;
+        }
+
+        .clearfix {
+            zoom: 1;
+            /* for ie6 & ie7 */
+        }
+
+        .clear {
+            clear: both;
+            display: block;
+            font-size: 0;
+            height: 0;
+            line-height: 0;
+            overflow: hidden;
+        }
+
+        .log-container {
+            height: 400px;
+            overflow-y: scroll;
+        }
+
+        .imgs {
+            width: 100%;
+            margin-top: 40px;
+            list-style: none;
+            display: flex;
+            justify-content: space-between;
+            padding-left: 0;
+        }
+
+        .imgs li {
+            width: 40%;
+            margin: 0 20px;
+        }
+        .imgs li img {
+            width: 100%;
+        }
+
+    </style>
+</head>
+
+<body>
+    <div>
+
+        <!-- Nav tabs -->
+
+
+        <!-- Button trigger modal -->
+        <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#configBoard" id="config">
+            打开设置
+        </button>
+
+        <!-- Modal -->
+        <div class="modal fade" id="configBoard" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                        <h2 class="modal-title" id="myModalLabel">U校园挂机喵——Powered by 初雪小白</h2>
+                    </div>
+                    <div class="modal-body">
+                        <ul id="myTabs" class="nav nav-tabs" role="tablist">
+                            <li role="presentation" class="active"><a href="#home" id="home-tab" role="tab"
+                                    data-toggle="tab" aria-controls="home" aria-expanded="false">
+                                    <font style="vertical-align: inherit;">
+                                        <font style="vertical-align: inherit;">设置面板</font>
+                                    </font>
+                                </a></li>
+                            <li role="presentation" class=""><a href="#profile" role="tab" id="profile-tab"
+                                    data-toggle="tab" aria-controls="profile" aria-expanded="true">
+                                    <font style="vertical-align: inherit;">
+                                        <font style="vertical-align: inherit;">日志</font>
+                                    </font>
+                                </a></li>
+                            <li role="presentation" class=""><a href="#reward" role="tab" id="reward-tab"
+                                    data-toggle="tab" aria-controls="reward" aria-expanded="false">
+                                    <font style="vertical-align: inherit;">
+                                        <font style="vertical-align: inherit;">加个鸡腿</font>
+                                    </font>
+                                </a></li>
+                        </ul>
+                        <div id="myTabContent" class="tab-content">
+                            <div role="tabpanel" class="tab-pane fade active in" id="home" aria-labelledby="home-tab">
+                                <div class="portion">
+                                    <ul class="clearfix">
+                                        <li><input type="checkbox">
+                                            <h3 class="h3">自动答题</h3>
+                                        </li>
+                                        <li><input type="checkbox" checked="checked">
+                                            <h3 class="h3">复习模式</h3>
+                                        </li>
+                                        <li><input type="checkbox">
+                                            <h3 class="h3">自动提交</h3>
+                                        </li>
+                                        <li><input type="checkbox" checked="checked">
+                                            <h3 class="h3">循环复习</h3>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="portion">
+                                    <ol>
+                                        <li>
+                                            <h3 class="h3">页面停留时间</h3><input type="number" value="5">
+                                            <h3 class="h3">min</h3>
+                                        </li>
+                                        <li>
+                                            <h3 class="h3">页面渲染时间</h3><input type="number" value="5">
+                                            <h3 class="h3">s(推荐>=5)</h3>
+                                        </li>
+                                        <li>
+                                            <h3 class="h3">开始章节</h3><input type="number" value="2">
+                                            <h3 class="h3">(若在总目录页启动脚本则填写此项)</h3>
+                                        </li>
+                                        <li>
+                                            <h3 class="h3">刷多久</h3><input type="number" value="120">
+                                            <h3 class="h3">min(自己控制刷多久不用担心刷的太久)</h3>
+                                        </li>
+                                        <li>
+                                            <h3 class="h3">没有答案？<a href="http://127.0.0.1:8080" target="_blank">立即上传，成为Contributor!</a></h3>
+                                        </li>
+                                    </ol>
+                                </div>
+                            </div>
+                            <div role="tabpanel" class="tab-pane fade" id="profile" aria-labelledby="profile-tab">
+                                <h4>查看原数据、报错信息——————</h4>
+                                <div class="log-container"></div>
+                            </div>
+                            <div role="tabpanel" class="tab-pane fade" id="reward" aria-labelledby="reward-tab">
+                                <h5>你的鼓励是作者继续更新、维护脚本的动力，同时也是为服务器的正常运行出一份力！</h5>
+                                <ul class="imgs">
+                                    <li><img src="" alt="" crossorigin="anonymous"></li>
+                                    <li><img src="" alt="" crossorigin="anonymous"></li>
+                                    <script>
+                                        let imgs=$('#reward').find('img');
+                                        imgs.each((i,e)=>{
+                                            let sourceUrl='';
+                                            switch(i){
+                                                case 0:
+                                                    sourceUrl='UschoolScriptImg0';
+                                                    break
+                                                case 1:
+                                                    sourceUrl='UschoolScriptImg1';
+                                                    break
+                                                default:break
+                                            }
+                                            let imgdata=localStorage.getItem(sourceUrl);
+                                            if(imgdata){
+                                                e.setAttribute('src',imgdata);
+                                            }
+                                            else{
+                                                e.addEventListener('load',function(){
+                                                    let canvas=document.createElement('canvas');
+                                                    let ctx=canvas.getContext("2d");
+                                                    canvas.width=e.width;
+                                                    canvas.height=e.height;
+                                                    ctx.drawImage(e,0,0);
+                                                    const dataUrl=canvas.toDataURL();
+                                                    localStorage.setItem(sourceUrl,dataUrl);
+                                                })
+                                                let url='';
+                                                if(i)
+                                                    url="http://127.0.0.1:8000/img/weixinpay.jpg";
+                                                else
+                                                    url="http://127.0.0.1:8000/img/alipay.jpg";
+                                                e.setAttribute('src',url);
+                                            }
+                                        })
+                                    </script>
+                                </ul>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                        <button type="button" class="btn btn-primary save">保存</button>
+                    </div>
+                    <script>
+                        $('div').append()
+                        
+                        
+                    </script>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

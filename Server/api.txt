@@ -1,0 +1,7 @@
+请求方式：get
+路径：/${书名代码}/${单元index}/${栏目index}/${Tab标签名前三个字母}/${该Tab下的第几个分页}
+例:/b654/u4/1-3/Col/0
+返回：json
+
+请求方式：get
+路径：/img/xxxx.jpg/png
