@@ -17,16 +17,16 @@
 // ==/UserScript==
 
 //全局变量部分Start
-let interval = 300000;
-let autosolve = false;
-let review = true;
-let unit = 1;
-let loop = true;
-let autosubmit = false;
-let waiting = 5000;
-let time_control = 120;
-let bookid = null;
-let curSec = 0;
+let interval = 300000;//单位ms，在一个页面逗留的时间 √
+let autosolve = false;//是否自动答题 
+let review = true;//是否复习模式
+let unit = 1;//选择复习的单元  √
+let loop = true;//是否循环复习 √
+let autosubmit = false;//是否自动提交
+let waiting = 5000;//单位ms，网速越慢值应越大，以免数据加载不出来 √
+let time_control = 120;//单位min，刷的时间 √
+let bookid = null;//书名代码，课程目录路径中的courseid
+let curSec = 0;//栏目下的分区序号
 let configContent = `
 <!-- Button trigger modal -->
 <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#configBoard" id="config">
@@ -130,8 +130,8 @@ let configContent = `
                 </div>
             </div>
         </div>`;
-let newCSS = GM_getResourceText("customCSS");
-let myCSS = document.createElement("style");
+let newCSS = GM_getResourceText("customCSS");//加载外部CSS，资源已在上方resource中
+let myCSS = document.createElement("style");//自定义CSS
 myCSS.innerHTML =
     `
         #config {position: fixed;left: 0;top: 100px;z-index: 999;}
@@ -210,12 +210,13 @@ myCSS.innerHTML =
             line-height:16px;
         }
     `
-
-$(function () {
+//----------------------------
+$(function () {//dom加载完毕
     GM_addStyle(newCSS);
     $("head").append(myCSS);
+    //$("head").append('<meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">');
     AddHtml(configContent);
-    $("window").ready(function () {
+    $("window").ready(function () {//所有文件加载完毕
         let imgs = $('#reward').find('img');
         imgs.each((i, e) => {
             let sourceUrl = '';
@@ -252,14 +253,14 @@ $(function () {
         })
         if (localStorage.getItem('configContent')) {
             configs = JSON.parse(localStorage.getItem('configContent'));
-            autosolve = configs[0];
-            review = configs[1];
-            autosubmit = configs[2];
-            loop = configs[3];
+            autosolve = configs[0];//是否自动答题 
+            review = configs[1];//是否复习模式
+            autosubmit = configs[2];//是否自动提交
+            loop = configs[3];//是否循环复习 
             const tf = [autosolve, review, autosubmit, loop];
-            interval = configs[4];
-            waiting = configs[5];
-            unit = configs[6];                  
+            interval = configs[4];//单位ms，在一个页面逗留的时间
+            waiting = configs[5];//单位ms，网速越慢值应越大，以免数据加载不出来
+            unit = configs[6];//选择复习的单元                       
             time_control = configs[7];
             const vals = [interval, waiting, unit, time_control];
             $('.modal').find('.modal-body').find('.portion').find('ul').find('input').each(function (i, e) {
@@ -345,7 +346,7 @@ $(function () {
             location.reload();
         })
         let href = location.href;
-        if (href.match('courseCatalog') !== null) {
+        if (href.match('courseCatalog') !== null) {//总目录页
             setTimeout(function () {
                 let uls = [];
                 $('ul').each(function (i, e) {
@@ -354,12 +355,12 @@ $(function () {
                     }
                 })
                 if (review) {
-                    $(uls[unit]).children('.group').eq(1).click();
+                    $(uls[unit]).children('.group').eq(1).click();//setting the scene页面有点小问题
                 }
                 else {
 
                 }
-            }, 15000)
+            }, 15000)//等待一段时间后执行，以便用户选择是否在当前页开始并获得异步加载后的页面数据
         }
         else {
             if (localStorage.getItem("time_controls")) {
@@ -393,10 +394,11 @@ $(function () {
                 })
                 active_index = getIndexOf(right_lis, 'active');
                 active_one = getIndexOf(top_lis, 'active');
+                //writeData($('.questions')[0]);
                 console.log(active_one);
                 console.log(right_lis);
                 console.log(top_lis);
-            }, waiting);
+            }, waiting);//等待页面渲染
             setTimeout(function () {
                 const http = new axios();
                 const curCol = $(right_lis[active_index]).find('a')[0].innerHTML.substring(0, 3);
@@ -422,7 +424,7 @@ $(function () {
                 const btnList = $('button');
                 const node = $('.questions')[0] || $("[class^='sequence-pc--sequence-container-']")[0];
                 console.log(node);
-                if (localStorage.getItem("time_controls")) {
+                if (localStorage.getItem("time_controls")) {//达到设置的时间
                     let time_controls = JSON.parse(localStorage.getItem("time_controls"));
                     time_controls[time_controls.length - 1] += interval / 60000;
                     localStorage.setItem("time_controls", JSON.stringify(time_controls));
@@ -438,34 +440,34 @@ $(function () {
                     time_controls.push(interval / 60000);
                     localStorage.setItem("time_controls", JSON.stringify(time_controls));
                 }
-                if (findSubmit(btnList)) {
+                if (findSubmit(btnList)) {//有下一题按钮
                     const subbtn = findSubmit(btnList);
                     subbtn.click();
-                    if (node)
+                    if (node)//有问题才需要增加
                         curSec++;
                 }
                 else {
-                    if ($('.headerbar').children('.TabsBox').children().length === 1) {
+                    if ($('.headerbar').children('.TabsBox').children().length === 1) {//没有别的tab
                         right_lis[active_index + 1].click();
                         curSec = 0;
                     }
                     else {
-                        if (active_one === top_lis.length - 1) {
-                            if (active_index === right_lis.length - 1) {
+                        if (active_one === top_lis.length - 1) {//到达了最后一个tab
+                            if (active_index === right_lis.length - 1) {//到达了最后一个col
                                 if (loop) {
                                     $('#header').find('.layoutHeaderStyle--breadCrumbBox-rFgzd').children('ul').children().eq(0).children('a')[0].click();//返回课程目录
                                 }
                                 else
-                                    clearInterval(timer);
+                                    clearInterval(timer);//停留在最后一个col
                             }
                             else {
-                                right_lis[active_index + 1].click();
+                                right_lis[active_index + 1].click();//进入下一个col
                                 curSec = 0;
                             }
 
                         }
                         else {
-                            top_lis[active_one + 1].click();
+                            top_lis[active_one + 1].click();//进入下一个tab
                             curSec = 0;
                         }
                     }
@@ -474,7 +476,7 @@ $(function () {
                     top_lis = $('.headerbar').children('.TabsBox').children();
                     active_index = getIndexOf(right_lis, 'active');
                     active_one = getIndexOf(top_lis, 'active');
-                }, waiting);
+                }, waiting);//等待页面渲染
                 setTimeout(function () {
                     const http = new axios();
                     const curCol = $(right_lis[active_index]).find('a')[0].innerHTML.substring(0, 3);
@@ -494,13 +496,13 @@ $(function () {
                         .catch(err => writeLog(err));
                 }, 20000)
 
-            }, interval);
+            }, interval);//页面停留时间
         }
     })
 
 
 })
-
+//全局函数定义Start
 function AddHtml(html) {
     document.body.insertAdjacentHTML('afterBegin', html);
 }
@@ -523,17 +525,35 @@ function findSubmit(btnList) {
     return btn;
 }
 function handleData(data) {
+    // let product = [];
+    // if (!isNaN(Number(data[0][0]))) {//data为列表格式
+    //     data.forEach((e, index) => {
+    //         const e1 = e.match(/[a-zA-Z].*/);//返回的是一个对象
+
+    //         const e2 = e1[0].replace(/(reference)/i, '');
+    //         if (!isNaN(e[0]))//是每一项的第一句
+    //             product.push(e2);
+    //         else {
+    //             let line = product[product.length - 1];
+    //             product[product.length - 1] = line + ' ' + e2;
+    //         }
+    //     })
+    // }
+    // else {//data里面只有一句话
+    //     product.push(data.join(' '));
+    // }
+    // return product;
     let product = [];
     if (data[0].match(/^(\s*reference)/i)) {
-        if (!isNaN(Number(data[1][0]))) {
+        if (!isNaN(Number(data[1][0]))) {//data为列表格式
             data.forEach((e, index) => {
                 e=e.replace(':','');
                 if (index == 0)
                     return;
-                const e1 = e.match(/[a-zA-Z].*/);
+                const e1 = e.match(/[a-zA-Z].*/);//返回的是一个对象
 
                 const e2 = e1[0].replace(/(reference)/i, '');
-                if (!isNaN(e[0]))
+                if (!isNaN(e[0]))//是每一项的第一句
                     product.push(e2);
                 else {
                     let line = product[product.length - 1];
@@ -541,18 +561,18 @@ function handleData(data) {
                 }
             })
         }
-        else {
+        else {//data为一句话
             product.push(data.join(' '));
         }
     }
     else {
-        if (!isNaN(Number(data[0][0]))) {
+        if (!isNaN(Number(data[0][0]))) {//data为列表格式
             data.forEach((e, index) => {
                 e=e.replace(':','');
-                const e1 = e.match(/[a-zA-Z].*/);
+                const e1 = e.match(/[a-zA-Z].*/);//返回的是一个对象
 
                 const e2 = e1[0].replace(/(reference)/i, '');
-                if (!isNaN(e[0]))
+                if (!isNaN(e[0]))//是每一项的第一句
                     product.push(e2);
                 else {
                     let line = product[product.length - 1];
@@ -560,10 +580,10 @@ function handleData(data) {
                 }
             })
         }
-        else {
+        else {//data里面是选项
             let line = data.join(' ');
             line = line.toUpperCase();
-            line = line.replace(/(CC)/g, 'C');
+            line = line.replace(/(CC)/g, 'C');//将ocr无法区分的C和c统一转化为C
             let reg = new RegExp(/[A-Z]/);
             for (let ch of line) {
                 if (reg.test(ch))
@@ -596,6 +616,7 @@ function writeData(elementNode, data) {
     }
     if (radios.length) {
         radios.each(function (index) {
+            //处理选项数据
             setTimeout(() => {
                 const input_radios = $(this).find('input[type="radio"]');
                 switch (data[index]) {
